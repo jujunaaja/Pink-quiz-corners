@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pink Animal Personality 🎀</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:22px 14px;min-height:100vh;
+ background:linear-gradient(150deg,#fff5fa,#ffe4ef,#fff0f6);
+ color:#75435b;font-family:Arial,sans-serif;
+ text-align:center
+}
+header{margin:10px auto 22px}
+h1{font-family:Georgia,serif;color:#d65391;font-size:30px}
+.sub{color:#ad7b95;font-size:14px;line-height:1.7}
+.card{
+ max-width:470px;margin:auto;padding:23px 18px;
+ background:#fff;border:1px solid #ffd2e5;
+ border-radius:27px;box-shadow:0 10px 30px #bd67951c
+}
+.hidden{display:none!important}
+.bow{font-size:29px}
+button{
+ cursor:pointer;font-size:15px;line-height:1.5;
+ border:1px solid #f4c4da;border-radius:17px;
+ padding:13px;background:#fff5f9;color:#8b4165;
+ transition:background .2s,transform .2s
+}
+button:active{transform:scale(.98)}
+button:focus-visible{outline:3px solid #d95e99}
+.primary{background:#e981b0;color:white;border:none;font-weight:bold}
+.primary:hover{background:#d95e99}
+.full{width:100%;margin-top:12px}
+.progress-bg{height:9px;background:#fbe2ed;border-radius:20px;overflow:hidden;margin:13px 0}
+#bar{height:100%;width:0;background:#e981b0;transition:width .25s}
+.small{font-size:12px;color:#b07f99}
+#question{font-family:Georgia,serif;font-size:22px;line-height:1.5;min-height:95px;display:flex;align-items:center;justify-content:center}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:20px 0 8px}
+.scale button{padding:10px 2px;font-weight:bold}
+.scale button span{display:block;font-size:10px;font-weight:normal;margin-top:5px}
+.scale button.selected{background:#e981b0;color:white;border-color:#e981b0}
+.scale-labels{display:flex;justify-content:space-between;font-size:11px;color:#b07f99}
+.nav{display:flex;gap:8px;margin-top:20px}
+.nav button{flex:1}
+#resultEmoji{font-size:68px;margin:8px}
+#resultType{font: bold 36px Georgia,serif;color:#d65391}
+#resultName{font:24px Georgia,serif;margin:8px}
+.description{font-size:14px;line-height:1.85;color:#81556b}
+.resultbox{background:#fff3f8;border-radius:18px;padding:15px;text-align:left;margin:12px 0;line-height:1.8;font-size:14px}
+.meter{height:8px;background:#f4dce8;border-radius:20px;overflow:hidden;margin:7px 0 13px}
+.meter div{height:100%;background:#e981b0;border-radius:20px}
+.animal-card{border:1px solid #f5d2e2;border-radius:18px;padding:14px;margin:10px 0;background:#fffafd;text-align:left}
+.animal-card strong{color:#c64f89}
+footer{font-size:12px;color:#b58ba0;margin:22px}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="bow">🎀 ♡ 🎀</div>
+ <h1>Pink Animal Personality</h1>
+ <p class="sub">Discover the animal hidden in your heart.<br>36 questions · 12 animal personalities</p>
+</header>
+
+<main class="card">
+ <section id="welcome">
+  <div class="bow">🐰</div>
+  <h2>Which animal are you?</h2>
+  <p class="description">
+   Kamu mungkin terlihat seperti satu hal di luar,
+   tetapi punya sisi lain yang hanya muncul saat
+   kamu merasa nyaman.
+   Yuk, cari tahu dua hewan yang menggambarkan
+   kepribadianmu!
+  </p>
+  <div class="resultbox">
+   ♡ 36 pertanyaan<br>
+   ♡ Skala jawaban 1–5<br>
+   ♡ Main animal + hidden animal<br>
+   ♡ Hasil berdasarkan pola jawabanmu
+  </div>
+  <button class="primary full" onclick="startQuiz()">Mulai kuis ♡</button>
+ </section>
+
+ <section id="quiz" class="hidden">
+  <div id="counter" class="small"></div>
+  <div class="progress-bg"><div id="bar"></div></div>
+  <h2 id="question"></h2>
+  <p class="small">Pilih seberapa sesuai pernyataan ini dengan dirimu.</p>
+  <div class="scale" id="scale"></div>
+  <div class="scale-labels"><span>Tidak setuju</span><span>Setuju banget</span></div>
+  <div class="nav">
+   <button onclick="previous()">← Kembali</button>
+   <button class="primary" onclick="next()">Lanjut →</button>
+  </div>
+  <p id="warning" class="small"></p>
+ </section>
+
+ <section id="result" class="hidden">
+  <div class="bow">୨୧</div>
+  <p class="small">YOUR MAIN ANIMAL</p>
+  <div id="resultEmoji"></div>
+  <div id="resultType"></div>
+  <h2 id="resultName"></h2>
+  <p id="tagline" class="description"></p>
+
+  <div class="resultbox">
+   <strong>♡ Kepribadianmu</strong>
+   <p id="desc"></p>
+   <strong>✧ Kekuatanmu</strong>
+   <p id="strength"></p>
+   <strong>🌷 Sisi tersembunyi</strong>
+   <p id="hidden"></p>
+   <strong>💌 Dalam hubungan</strong>
+   <p id="love"></p>
+  </div>
+
+  <h3>♡ Hidden animal</h3>
+  <div class="animal-card">
+   <div id="hiddenEmoji" style="font-size:36px"></div>
+   <strong id="hiddenName"></strong>
+   <p id="hiddenDesc" class="description"></p>
+  </div>
+
+  <h3>🎀 Personality breakdown</h3>
+  <p class="small">Kecocokan relatif dari pola jawabanmu.</p>
+  <div id="breakdown"></div>
+
+  <button class="primary full" onclick="shareResult()">Bagikan hasil ♡</button>
+  <button class="full" onclick="startQuiz()">Ulangi kuis ↻</button>
+ </section>
+</main>
+
+<footer>Made with love, ribbons & little paws ♡</footer>
+
+<script>
+const questions = [
+ ["Aku butuh waktu sebelum nyaman dengan orang baru.","cautious"],
+ ["Aku mudah menangkap perubahan suasana hati orang lain.","sensitive"],
+ ["Saat sedih, aku lebih suka memproses perasaanku sendiri dahulu.","solitary"],
+ ["Aku senang mencoba hal baru meskipun belum tahu hasilnya.","curious"],
+ ["Aku menunjukkan kasih sayang lewat tindakan kecil.","caring"],
+ ["Saat ada masalah, aku mencari solusi praktis terlebih dahulu.","practical"],
+ ["Aku sering membayangkan berbagai kemungkinan sebelum memilih.","imaginative"],
+ ["Aku nyaman menjadi pusat perhatian dalam kelompok.","social"],
+ ["Aku membutuhkan kepastian dari orang yang penting bagiku.","reassurance"],
+ ["Aku bisa tetap tenang saat situasi mendadak berubah.","adaptable"],
+ ["Aku mudah kewalahan oleh emosi di sekitarku.","sensitive"],
+ ["Aku suka membuat orang tertawa atau menggoda dengan bercanda.","playful"],
+ ["Aku suka memiliki rutinitas yang bisa diandalkan.","structured"],
+ ["Aku memperhatikan detail yang sering dilewatkan orang lain.","observant"],
+ ["Aku butuh waktu sendiri setelah banyak berinteraksi.","solitary"],
+ ["Aku berani menyampaikan pendapat yang berbeda.","assertive"],
+ ["Aku cenderung melindungi orang yang kusayangi.","protective"],
+ ["Aku cepat bosan jika semuanya terlalu mudah ditebak.","curious"],
+ ["Aku bisa menyembunyikan perasaan saat sedang terganggu.","guarded"],
+ ["Aku lebih suka menyelesaikan konflik dengan bicara langsung.","direct"],
+ ["Aku sering memikirkan ulang percakapan setelah selesai.","reflective"],
+ ["Aku mudah menunjukkan antusiasme saat menyukai sesuatu.","expressive"],
+ ["Aku menghargai kebebasan untuk menentukan caraku sendiri.","independent"],
+ ["Aku nyaman meminta bantuan saat membutuhkannya.","trusting"],
+ ["Aku mempertimbangkan keamanan sebelum mengambil risiko.","cautious"],
+ ["Aku punya sisi manja yang hanya muncul pada orang tertentu.","affectionate"],
+ ["Aku mudah menyesuaikan diri dengan lingkungan berbeda.","adaptable"],
+ ["Aku lebih suka mengamati dahulu sebelum ikut bertindak.","observant"],
+ ["Aku suka memecahkan teka-teki dan mencari pola.","analytical"],
+ ["Aku menunjukkan rasa sayang dengan meluangkan waktu.","caring"],
+ ["Saat kecewa, aku cenderung menarik diri sementara.","withdrawn"],
+ ["Aku sering punya ide atau cerita yang hidup di kepala.","imaginative"],
+ ["Aku bisa tegas saat batas pribadiku dilanggar.","assertive"],
+ ["Aku senang merawat seseorang atau sesuatu secara konsisten.","nurturing"],
+ ["Aku lebih suka lingkaran pertemanan kecil yang dekat.","solitary"],
+ ["Aku mencoba lagi ketika sesuatu tidak berjalan sesuai rencana.","resilient"]
+];
+
+const animals = [
+ {id:"rabbit",name:"The Bunny",emoji:"🐰",title:"Si Lembut",
+ traits:["sensitive","cautious","reassurance","affectionate","caring","nurturing","trusting","withdrawn"],
+ desc:"Kamu cenderung lembut, peka, dan menghargai rasa aman. Kamu mungkin butuh waktu untuk membuka diri, tetapi bisa sangat hangat ketika sudah percaya.",
+ strength:"Empati, perhatian pada detail emosional, dan kemampuan merawat hubungan.",
+ hidden:"Kamu bisa terlihat lebih kuat dari yang kamu rasakan. Sesekali, kamu mungkin memendam kebutuhan sendiri demi menjaga suasana.",
+ love:"Kamu menghargai konsistensi, perhatian kecil, dan orang yang membuatmu merasa diterima."},
+ {id:"cat",name:"The Cat",emoji:"🐈",title:"Si Independen",
+ traits:["independent","guarded","solitary","observant","cautious","analytical","assertive","affectionate"],
+ desc:"Kamu menghargai ruang pribadi dan tidak selalu menunjukkan semua perasaan. Kedekatan bagimu dibangun melalui kepercayaan, bukan paksaan.",
+ strength:"Mandiri, jeli mengamati, dan tahu kapan harus menjaga batas.",
+ hidden:"Di balik sikap tenang atau cuek, kamu mungkin menyimpan sisi hangat yang hanya dilihat orang tertentu.",
+ love:"Kamu menyukai kedekatan yang nyaman, tidak mengekang, dan menghormati ruang pribadimu."},
+ {id:"fox",name:"The Fox",emoji:"🦊",title:"Si Cerdik",
+ traits:["curious","playful","analytical","adaptable","observant","independent","imaginative","direct"],
+ desc:"Kamu suka mengeksplorasi ide, membaca situasi, dan menemukan cara kreatif untuk menghadapi masalah.",
+ strength:"Cepat beradaptasi, penuh akal, dan punya rasa ingin tahu tinggi.",
+ hidden:"Kamu mungkin memakai humor atau kecerdikan untuk mengalihkan perhatian dari hal yang membuatmu tidak nyaman.",
+ love:"Kamu menikmati hubungan yang seru, komunikatif, dan memberimu kebebasan untuk menjadi diri sendiri."},
+ {id:"deer",name:"The Deer",emoji:"🦌",title:"Si Peka",
+ traits:["sensitive","cautious","observant","reflective","caring","guarded","solitary","trusting"],
+ desc:"Kamu cenderung mengamati suasana sebelum melangkah. Kamu menghargai kelembutan dan hubungan yang tumbuh secara perlahan.",
+ strength:"Peka terhadap lingkungan, penuh pertimbangan, dan menghargai ketulusan.",
+ hidden:"Kamu bisa terlalu lama menimbang sesuatu karena ingin memastikan semuanya terasa aman.",
+ love:"Kamu menghargai kesabaran, kelembutan, dan komunikasi yang tidak menghakimi."},
+ {id:"otter",name:"The Otter",emoji:"🦦",title:"Si Ceria",
+ traits:["playful","social","expressive","curious","adaptable","affectionate","resilient","trusting"],
+ desc:"Kamu suka menemukan kesenangan dalam hal sederhana dan bisa membawa energi menyenangkan ke lingkunganmu.",
+ strength:"Antusiasme, keramahan, dan kemampuan membuat suasana terasa lebih ringan.",
+ hidden:"Kadang kamu memakai keceriaan untuk melewati perasaan yang sebenarnya perlu diperhatikan.",
+ love:"Kamu menyukai waktu berkualitas, candaan bersama, dan pengalaman baru dengan orang terdekat."},
+ {id:"owl",name:"The Owl",emoji:"🦉",title:"Si Pengamat",
+ traits:["analytical","observant","reflective","solitary","structured","practical","guarded","cautious"],
+ desc:"Kamu suka memahami sesuatu sebelum mengambil kesimpulan. Kamu cenderung berpikir mendalam dan memperhatikan pola.",
+ strength:"Pemikiran analitis, ketelitian, dan pertimbangan matang.",
+ hidden:"Terlalu banyak berpikir kadang membuatmu sulit menikmati momen tanpa menganalisisnya.",
+ love:"Kamu menghargai percakapan bermakna, kejujuran, dan hubungan yang stabil."},
+ {id:"dolphin",name:"The Dolphin",emoji:"🐬",title:"Si Penghubung",
+ traits:["social","expressive","caring","adaptable","playful","trusting","affectionate","resilient"],
+ desc:"Kamu cenderung menikmati interaksi dan senang membangun hubungan yang terasa hidup serta saling mendukung.",
+ strength:"Komunikasi, kerja sama, dan kemampuan menghubungkan orang.",
+ hidden:"Kamu mungkin terlalu sibuk menjaga hubungan hingga lupa memeriksa kebutuhanmu sendiri.",
+ love:"Kamu menyukai komunikasi terbuka, kebersamaan, dan perhatian timbal balik."},
+ {id:"hedgehog",name:"The Hedgehog",emoji:"🦔",title:"Si Penjaga Hati",
+ traits:["guarded","cautious","solitary","sensitive","independent","observant","withdrawn","affectionate"],
+ desc:"Kamu bisa berhati-hati saat membiarkan orang mendekat. Kamu lebih nyaman membangun kepercayaan sedikit demi sedikit.",
+ strength:"Mandiri, setia pada orang dekat, dan mampu menjaga batas pribadi.",
+ hidden:"Sikap melindungi diri mungkin membuat orang lain kesulitan mengetahui kapan kamu membutuhkan dukungan.",
+ love:"Kamu menghargai kesabaran, rasa aman, dan orang yang tidak memaksamu terbuka sebelum siap."},
+ {id:"swan",name:"The Swan",emoji:"🦢",title:"Si Anggun",
+ traits:["structured","reflective","caring","guarded","assertive","observant","nurturing","direct"],
+ desc:"Kamu menghargai keseimbangan, ketenangan, dan cara yang teratur dalam menghadapi berbagai situasi.",
+ strength:"Konsistensi, ketegasan yang tenang, dan perhatian pada kualitas.",
+ hidden:"Kamu mungkin merasa harus selalu terlihat baik-baik saja meskipun sedang mengalami hari yang berat.",
+ love:"Kamu menghargai kesetiaan, gestur bermakna, dan hubungan yang saling menghormati."},
+ {id:"bear",name:"The Bear",emoji:"🐻",title:"Si Pelindung",
+ traits:["protective","nurturing","caring","resilient","practical","assertive","structured","affectionate"],
+ desc:"Kamu cenderung menunjukkan kepedulian melalui tindakan dan berusaha menjadi orang yang bisa diandalkan.",
+ strength:"Keteguhan, kemurahan hati, dan kemampuan hadir ketika dibutuhkan.",
+ hidden:"Kamu mungkin terbiasa menjadi penopang orang lain dan lupa bahwa kamu juga boleh meminta bantuan.",
+ love:"Kamu menghargai kehadiran yang konsisten, tindakan nyata, dan rasa saling menjaga."},
+ {id:"raven",name:"The Raven",emoji:"🐦‍⬛",title:"Si Misterius",
+ traits:["imaginative","analytical","independent","guarded","reflective","observant","curious","solitary"],
+ desc:"Kamu punya rasa ingin tahu dan dunia pemikiran yang kaya. Kamu senang mencari makna dan tidak selalu mudah ditebak.",
+ strength:"Imajinasi, pemikiran mendalam, dan sudut pandang yang unik.",
+ hidden:"Kamu bisa tenggelam dalam pikiran sendiri dan lupa membagikan apa yang sedang kamu rasakan.",
+ love:"Kamu menyukai koneksi yang mendalam, kejujuran, dan kebebasan untuk menjadi diri sendiri."},
+ {id:"dog",name:"The Dog",emoji:"🐕",title:"Si Setia",
+ traits:["trusting","expressive","social","protective","caring","affectionate","resilient","direct"],
+ desc:"Kamu menghargai kedekatan, menunjukkan perhatian secara nyata, dan cenderung berusaha hadir bagi orang yang penting bagimu.",
+ strength:"Loyalitas, kehangatan, dan kesediaan untuk membantu.",
+ hidden:"Kamu mungkin memberi terlalu banyak energi pada hubungan yang tidak selalu seimbang.",
+ love:"Kamu menghargai kejelasan, kebersamaan, dan kasih sayang yang ditunjukkan secara konsisten."}
+];
+
+let index=0;
+let answers=Array(questions.length).fill(null);
+let resultText="";
+
+function startQuiz(){
+ index=0;
+ answers=Array(questions.length).fill(null);
+ document.getElementById("welcome").classList.add("hidden");
+ document.getElementById("result").classList.add("hidden");
+ document.getElementById("quiz").classList.remove("hidden");
+ renderQuestion();
+ window.scrollTo(0,0);
+}
+
+function renderQuestion(){
+ const q=questions[index];
+ document.getElementById("counter").textContent=
+  `QUESTION ${index+1} OF ${questions.length}`;
+ document.getElementById("bar").style.width=
+  `${index/questions.length*100}%`;
+ document.getElementById("question").textContent=q[0];
+ document.getElementById("warning").textContent="";
+ const scale=document.getElementById("scale");
+ scale.innerHTML="";
+ const labels=["Tidak setuju","Kurang setuju","Netral","Setuju","Sangat setuju"];
+
+ for(let n=1;n<=5;n++){
+  const b=document.createElement("button");
+  b.type="button";
+  b.innerHTML=`${n}<span>${labels[n-1]}</span>`;
+  if(answers[index]===n)b.classList.add("selected");
+  b.setAttribute("aria-pressed",answers[index]===n?"true":"false");
+  b.onclick=()=>{
+   answers[index]=n;
+   renderQuestion();
+  };
+  scale.appendChild(b);
+ }
+ document.querySelector(".nav button").style.visibility=
+  index===0?"hidden":"visible";
+}
+
+function next(){
+ if(answers[index]===null){
+  document.getElementById("warning").textContent=
+   "Pilih angka 1–5 dulu, yaa ♡";
+  return;
+ }
+ if(index<questions.length-1){
+  index++;
+  renderQuestion();
+  window.scrollTo(0,0);
+ }else{
+  showResult();
+ }
+}
+
+function previous(){
+ if(index>0){
+  index--;
+  renderQuestion();
+ }
+}
+
+function calculateScores(){
+ const traitTotals={};
+ const traitCounts={};
+ questions.forEach((q,i)=>{
+  const trait=q[1];
+  traitTotals[trait]=(traitTotals[trait]||0)+answers[i];
+  traitCounts[trait]=(traitCounts[trait]||0)+1;
+ });
+ const traits={};
+ Object.keys(traitTotals).forEach(t=>{
+  traits[t]=traitTotals[t]/traitCounts[t];
+ });
+
+ const scores=animals.map(animal=>{
+  let total=0, count=0;
+  animal.traits.forEach(t=>{
+   if(traits[t]!==undefined){
+    total+=traits[t];
+    count++;
+   }
+  });
+  return {animal,score:count?total/count:3};
+ });
+ return scores.sort((a,b)=>b.score-a.score);
+}
+
+function showResult(){
+ const ranking=calculateScores();
+ const main=ranking[0].animal;
+ const second=ranking[1].animal;
+ const mainScore=ranking[0].score;
+ const secondScore=ranking[1].score;
+
+ document.getElementById("quiz").classList.add("hidden");
+ document.getElementById("result").classList.remove("hidden");
+ document.getElementById("bar").style.width="100%";
+
+ document.getElementById("resultEmoji").textContent=main.emoji;
+ document.getElementById("resultType").textContent=main.name;
+ document.getElementById("resultName").textContent=main.title;
+ document.getElementById("tagline").textContent=
+  "Hewan yang paling cocok dengan pola kepribadianmu ♡";
+ document.getElementById("desc").textContent=main.desc;
+ document.getElementById("strength").textContent=main.strength;
+ document.getElementById("hidden").textContent=main.hidden;
+ document.getElementById("love").textContent=main.love;
+ document.getElementById("hiddenEmoji").textContent=second.emoji;
+ document.getElementById("hiddenName").textContent=
+  second.name+" — "+second.title;
+ document.getElementById("hiddenDesc").textContent=second.desc;
+
+ const max=ranking[0].score;
+ const min=ranking[ranking.length-1].score;
+ const spread=max-min;
+ document.getElementById("breakdown").innerHTML=ranking.slice(0,5).map(r=>{
+  const pct=spread<0.001?100:Math.round(
+   55+45*(r.score-min)/spread
+  );
+  return `<div style="text-align:left;font-size:13px">
+   <strong>${r.animal.emoji} ${r.animal.name}</strong>
+   <div class="meter"><div style="width:${pct}%"></div></div>
+  </div>`;
+ }).join("");
+
+ resultText=`Hasil Pink Animal Personality 🎀
+Main animal: ${main.name} (${main.title})
+Hidden animal: ${second.name} (${second.title})
+
+${main.desc}
+
+Coba kuisnya juga!`;
+ window.scrollTo(0,0);
+}
+
+async function shareResult(){
+ if(!resultText)return;
+ try{
+  if(navigator.share){
+   await navigator.share({title:"My Animal Personality",text:resultText});
+  }else if(navigator.clipboard && window.isSecureContext){
+   await navigator.clipboard.writeText(resultText);
+   alert("Hasil berhasil disalin! ♡");
+  }else{
+   window.prompt("Salin hasilmu di bawah ini:",resultText);
+  }
+ }catch(e){
+  if(e.name!=="AbortError")alert("Kamu bisa menyalin hasil dari halaman ini ♡");
+ }
+}
+</script>
+</body>
+</html>
